@@ -1,8 +1,6 @@
 package vladdossik.jdbc.jpa.dao;
 
 import vladdossik.jdbc.jpa.model.User;
-import vladdossik.jdbc.jpa.service.UserServiceImpl;
-import vladdossik.jdbc.jpa.util.Util;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -23,14 +21,12 @@ public class UserDaoJDBCImpl implements UserDao {
 
     @Override
     public void createUsersTable() {
-        String sql = """
-                    CREATE TABLE IF NOT EXISTS users (
-                        id BIGSERIAL PRIMARY KEY,
-                        name VARCHAR(255) NOT NULL,
-                        lastName VARCHAR(255) NOT NULL,
-                        age SMALLINT NOT NULL
-                    )
-                """;
+        String sql = "CREATE TABLE IF NOT EXISTS users(" +
+                "id BIGSERIAL PRIMARY KEY," +
+                "name VARCHAR(255) NOT NULL," +
+                "last_name VARCHAR(255) NOT NULL," +
+                "age SMALLINT NOT NULL" +
+                ");";
         try (Statement statement = connection.createStatement()) {
             statement.execute(sql);
         } catch (SQLException e) {
@@ -84,7 +80,8 @@ public class UserDaoJDBCImpl implements UserDao {
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
         String sql = "SELECT id, name, lastName, age FROM users";
-        try (Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery(sql)) {
+        try (Statement statement = connection.createStatement()) {
+            ResultSet resultSet = statement.executeQuery(sql);
             while (resultSet.next()) {
                 Long id = resultSet.getLong("id");
                 String name = resultSet.getString("name");
@@ -92,6 +89,7 @@ public class UserDaoJDBCImpl implements UserDao {
                 Byte age = resultSet.getByte("age");
                 users.add(new User(id, name, lastName, age));
             }
+            resultSet.close();
         } catch (SQLException e) {
             throw new RuntimeException("Error getting all users", e);
         }

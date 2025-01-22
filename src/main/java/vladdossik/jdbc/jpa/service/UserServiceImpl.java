@@ -1,6 +1,7 @@
 package vladdossik.jdbc.jpa.service;
 
 import vladdossik.jdbc.jpa.dao.UserDao;
+import vladdossik.jdbc.jpa.dao.UserDaoHibernateImpl;
 import vladdossik.jdbc.jpa.dao.UserDaoJDBCImpl;
 import vladdossik.jdbc.jpa.model.User;
 import vladdossik.jdbc.jpa.util.Util;
@@ -13,8 +14,7 @@ public class UserServiceImpl implements UserService {
     private final UserDao userDao;
 
     public UserServiceImpl() throws SQLException {
-        Connection connection = Util.getConnection();
-        this.userDao = new UserDaoJDBCImpl(connection);
+        this.userDao = new UserDaoHibernateImpl();
     }
 
     @Override
@@ -29,7 +29,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void saveUser(String name, String lastName, byte age) throws RuntimeException, SQLException {
-        User user = new User(null, name, lastName, age);
         userDao.saveUser(name, lastName, age);
     }
 
